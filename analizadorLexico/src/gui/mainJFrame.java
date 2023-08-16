@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.analizador_lexico.gui;
+package gui;
 
 /**
  *
@@ -11,10 +11,11 @@ package com.mycompany.analizador_lexico.gui;
 public class mainJFrame extends javax.swing.JFrame {
 
     /**
-     * Creates new form mainJFrame
+     * Creates new form mainFrame
      */
     public mainJFrame() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -26,75 +27,106 @@ public class mainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        rootPane = new javax.swing.JPanel();
+        rootPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        codeAreaTxtPane = new javax.swing.JTextPane();
+        codeTextPane = new javax.swing.JTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        consoleTextArea = new javax.swing.JTextArea();
+        terminalTextArea = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        reportTable = new javax.swing.JTable();
+        compileButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        newMenu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        newMenu = new javax.swing.JMenuItem();
         openMenu = new javax.swing.JMenuItem();
         saveMenu = new javax.swing.JMenuItem();
         saveAsMenu = new javax.swing.JMenuItem();
-        reportMenu = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jScrollPane1.setViewportView(codeAreaTxtPane);
+        jScrollPane1.setViewportView(codeTextPane);
 
-        consoleTextArea.setEditable(false);
-        consoleTextArea.setColumns(20);
-        consoleTextArea.setRows(5);
-        jScrollPane2.setViewportView(consoleTextArea);
+        terminalTextArea.setEditable(false);
+        terminalTextArea.setColumns(20);
+        terminalTextArea.setRows(5);
+        jScrollPane2.setViewportView(terminalTextArea);
 
-        javax.swing.GroupLayout rootPaneLayout = new javax.swing.GroupLayout(rootPane);
-        rootPane.setLayout(rootPaneLayout);
-        rootPaneLayout.setHorizontalGroup(
-            rootPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rootPaneLayout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(rootPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+        reportTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Token", "Patrón", "Lexema", "Línea,Columna"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(reportTable);
+
+        compileButton.setText("Compilar");
+
+        javax.swing.GroupLayout rootPanelLayout = new javax.swing.GroupLayout(rootPanel);
+        rootPanel.setLayout(rootPanelLayout);
+        rootPanelLayout.setHorizontalGroup(
+            rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rootPanelLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 972, Short.MAX_VALUE))
-                .addGap(12, 12, 12))
-        );
-        rootPaneLayout.setVerticalGroup(
-            rootPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rootPaneLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(compileButton))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+        rootPanelLayout.setVerticalGroup(
+            rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rootPanelLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rootPanelLayout.createSequentialGroup()
+                        .addComponent(compileButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3))
+                    .addGroup(rootPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        newMenu.setText("Archivo");
+        jMenu1.setText("Archivo");
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem1.setText("Nuevo");
-        newMenu.add(jMenuItem1);
+        newMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        newMenu.setText("Nuevo");
+        jMenu1.add(newMenu);
 
         openMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         openMenu.setText("Abrir");
-        newMenu.add(openMenu);
+        jMenu1.add(openMenu);
 
         saveMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         saveMenu.setText("Guardar");
-        newMenu.add(saveMenu);
+        jMenu1.add(saveMenu);
 
         saveAsMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         saveAsMenu.setText("Guardar como");
-        newMenu.add(saveAsMenu);
+        jMenu1.add(saveAsMenu);
 
-        reportMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        reportMenu.setText("Reportes");
-        newMenu.add(reportMenu);
-
-        jMenuBar1.add(newMenu);
+        jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Generar gráfico");
         jMenuBar1.add(jMenu2);
@@ -111,11 +143,11 @@ public class mainJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(rootPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(rootPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(rootPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(rootPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -147,6 +179,7 @@ public class mainJFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(mainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -157,20 +190,22 @@ public class mainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextPane codeAreaTxtPane;
-    private javax.swing.JTextArea consoleTextArea;
+    private javax.swing.JTextPane codeTextPane;
+    private javax.swing.JButton compileButton;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JMenu newMenu;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JMenuItem newMenu;
     private javax.swing.JMenuItem openMenu;
-    private javax.swing.JMenuItem reportMenu;
-    private javax.swing.JPanel rootPane;
+    private javax.swing.JTable reportTable;
+    private javax.swing.JPanel rootPanel;
     private javax.swing.JMenuItem saveAsMenu;
     private javax.swing.JMenuItem saveMenu;
+    private javax.swing.JTextArea terminalTextArea;
     // End of variables declaration//GEN-END:variables
 }

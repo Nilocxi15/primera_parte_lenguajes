@@ -1,19 +1,23 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
+package analizadorlexico;
 
-package com.mycompany.analizador_lexico;
-
-import com.mycompany.analizador_lexico.gui.mainJFrame;
+import gui.mainJFrame;
 
 /**
  *
  * @author hamme
  */
-public class Analizador_lexico {
+public class AnalizadorLexico {
 
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         mainJFrame mainWindow = new mainJFrame();
         mainWindow.setVisible(true);
     }
+    
 }
