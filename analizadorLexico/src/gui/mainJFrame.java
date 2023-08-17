@@ -4,18 +4,67 @@
  */
 package gui;
 
+import compilerTools.Directory;
+import compilerTools.ErrorLSSL;
+import compilerTools.Functions;
+import compilerTools.Production;
+import compilerTools.TextColor;
+import compilerTools.Token;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.swing.Timer;
+
 /**
  *
  * @author hamme
  */
 public class mainJFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form mainFrame
-     */
+    private String title;
+    private Directory directory;
+    private ArrayList<Token> tokens;
+    private ArrayList<ErrorLSSL> errors;
+    private Timer timerKeyReleased;
+    private ArrayList<Production> idProd;
+    private HashMap<String, String> identifiers;
+
     public mainJFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
+
+        init();
+    }
+
+    private void init() {
+        title = "";
+        setLocationRelativeTo(null);
+        setTitle(title);
+        directory = new Directory(this, codeTextPane, title, ".txt");
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                directory.Exit();
+                System.exit(0);
+            }
+        });
+        Functions.setLineNumberOnJTextComponent(codeTextPane);
+        Functions.insertAsteriskInName(this, codeTextPane, () -> {
+            timerKeyReleased.restart();
+        });
+        tokens = new ArrayList<>();
+        errors = new ArrayList<>();
+        idProd = new ArrayList<>();
+        identifiers = new HashMap<>();
+    }
+
+    private void clearFields() {
+
+    }
+    
+    private void compile() {
+        
     }
 
     /**
@@ -45,7 +94,7 @@ public class mainJFrame extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         jScrollPane1.setViewportView(codeTextPane);
 
@@ -76,6 +125,11 @@ public class mainJFrame extends javax.swing.JFrame {
         jScrollPane3.setViewportView(reportTable);
 
         compileButton.setText("Compilar");
+        compileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compileButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout rootPanelLayout = new javax.swing.GroupLayout(rootPanel);
         rootPanel.setLayout(rootPanelLayout);
@@ -112,18 +166,38 @@ public class mainJFrame extends javax.swing.JFrame {
 
         newMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         newMenu.setText("Nuevo");
+        newMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newMenuActionPerformed(evt);
+            }
+        });
         jMenu1.add(newMenu);
 
         openMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         openMenu.setText("Abrir");
+        openMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuActionPerformed(evt);
+            }
+        });
         jMenu1.add(openMenu);
 
         saveMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         saveMenu.setText("Guardar");
+        saveMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuActionPerformed(evt);
+            }
+        });
         jMenu1.add(saveMenu);
 
         saveAsMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         saveAsMenu.setText("Guardar como");
+        saveAsMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsMenuActionPerformed(evt);
+            }
+        });
         jMenu1.add(saveAsMenu);
 
         jMenuBar1.add(jMenu1);
@@ -152,6 +226,43 @@ public class mainJFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuActionPerformed
+        // TODO add your handling code here:
+        directory.New();
+        clearFields();
+    }//GEN-LAST:event_newMenuActionPerformed
+
+    private void openMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuActionPerformed
+        // TODO add your handling code here:
+        if (directory.Open()) {
+            // colorAnalysis(); se tiene que crear el método
+            clearFields();
+        }
+    }//GEN-LAST:event_openMenuActionPerformed
+
+    private void saveMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuActionPerformed
+        // TODO add your handling code here:
+        if (directory.Save()) {
+            clearFields();
+        }
+    }//GEN-LAST:event_saveMenuActionPerformed
+
+    private void saveAsMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuActionPerformed
+        // TODO add your handling code here:
+        if (directory.SaveAs()) {
+            clearFields();
+        }
+    }//GEN-LAST:event_saveAsMenuActionPerformed
+
+    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
+        // TODO add your handling code here:
+        if (getTitle().contains("*") || getTitle().equals(title)) {
+            if (directory.Save()) {
+                compile();
+            }
+        }
+    }//GEN-LAST:event_compileButtonActionPerformed
 
     /**
      * @param args the command line arguments
