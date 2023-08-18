@@ -8,13 +8,14 @@ import compilerTools.Directory;
 import compilerTools.ErrorLSSL;
 import compilerTools.Functions;
 import compilerTools.Production;
-import compilerTools.TextColor;
 import compilerTools.Token;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.Timer;
+import logic.dictionaryTokens;
+import logic.util;
 
 /**
  *
@@ -29,11 +30,15 @@ public class mainJFrame extends javax.swing.JFrame {
     private Timer timerKeyReleased;
     private ArrayList<Production> idProd;
     private HashMap<String, String> identifiers;
+    
+    dictionaryTokens dictionary = new dictionaryTokens();
+    util lexicTools = new util();
 
     public mainJFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
-
+        
+        dictionary.initDictionary();
         init();
     }
 
@@ -62,9 +67,24 @@ public class mainJFrame extends javax.swing.JFrame {
     private void clearFields() {
 
     }
-    
+
     private void compile() {
-        
+        clearFields();
+        lexicalAnalysis();
+        fillTableTokens();
+        printConsole();
+    }
+
+    private void lexicalAnalysis() {
+
+    }
+
+    private void fillTableTokens() {
+
+    }
+    
+    private void printConsole() {
+
     }
 
     /**
@@ -125,6 +145,11 @@ public class mainJFrame extends javax.swing.JFrame {
         jScrollPane3.setViewportView(reportTable);
 
         compileButton.setText("Compilar");
+        compileButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                compileButtonMouseClicked(evt);
+            }
+        });
         compileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 compileButtonActionPerformed(evt);
@@ -260,9 +285,18 @@ public class mainJFrame extends javax.swing.JFrame {
         if (getTitle().contains("*") || getTitle().equals(title)) {
             if (directory.Save()) {
                 compile();
+            } else {
+                compile();
             }
         }
     }//GEN-LAST:event_compileButtonActionPerformed
+
+    private void compileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compileButtonMouseClicked
+        // TODO add your handling code here:
+        lexicTools.setText(codeTextPane.getText());
+        lexicTools.readCharacter();
+        //Esta parte aún está pendiente
+    }//GEN-LAST:event_compileButtonMouseClicked
 
     /**
      * @param args the command line arguments
