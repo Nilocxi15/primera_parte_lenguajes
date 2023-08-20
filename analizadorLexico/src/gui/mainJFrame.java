@@ -30,14 +30,14 @@ public class mainJFrame extends javax.swing.JFrame {
     private Timer timerKeyReleased;
     private ArrayList<Production> idProd;
     private HashMap<String, String> identifiers;
-    
+
     dictionaryTokens dictionary = new dictionaryTokens();
     util lexicTools = new util();
 
     public mainJFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
-        
+
         dictionary.initDictionary();
         init();
     }
@@ -82,7 +82,7 @@ public class mainJFrame extends javax.swing.JFrame {
     private void fillTableTokens() {
 
     }
-    
+
     private void printConsole() {
 
     }
@@ -295,7 +295,12 @@ public class mainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         lexicTools.setText(codeTextPane.getText());
         lexicTools.readCharacter();
-        //Esta parte aún está pendiente
+        // Esta parte aún está pendiente
+        // PRESTALE MUCHA ATENCION
+        //
+        //
+        //
+        //
     }//GEN-LAST:event_compileButtonMouseClicked
 
     /**

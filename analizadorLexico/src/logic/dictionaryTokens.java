@@ -13,6 +13,7 @@ import java.util.HashMap;
 public class dictionaryTokens {
 
     private HashMap operatorsHashMap = new HashMap();
+    private boolean integerDigit;
 
     public void initDictionary() {
         operatorsHashMap.put("0", "+");
@@ -71,4 +72,5 @@ public class dictionaryTokens {
         String content = operatorsHashMap.get(positionValue).toString();
         return content;
     }
+
 }
