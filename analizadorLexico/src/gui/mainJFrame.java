@@ -5,14 +5,9 @@
 package gui;
 
 import compilerTools.Directory;
-import compilerTools.ErrorLSSL;
 import compilerTools.Functions;
-import compilerTools.Production;
-import compilerTools.Token;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.Timer;
 import logic.dictionaryTokens;
 import logic.util;
@@ -23,13 +18,9 @@ import logic.util;
  */
 public class mainJFrame extends javax.swing.JFrame {
 
-    private String title;
+    private String title, temporalText, textPaneString;
     private Directory directory;
-    private ArrayList<Token> tokens;
-    private ArrayList<ErrorLSSL> errors;
     private Timer timerKeyReleased;
-    private ArrayList<Production> idProd;
-    private HashMap<String, String> identifiers;
 
     dictionaryTokens dictionary = new dictionaryTokens();
     util lexicTools = new util();
@@ -39,6 +30,7 @@ public class mainJFrame extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
 
         dictionary.initDictionary();
+        dictionary.initClasificationDictionary();
         init();
     }
 
@@ -58,10 +50,6 @@ public class mainJFrame extends javax.swing.JFrame {
         Functions.insertAsteriskInName(this, codeTextPane, () -> {
             timerKeyReleased.restart();
         });
-        tokens = new ArrayList<>();
-        errors = new ArrayList<>();
-        idProd = new ArrayList<>();
-        identifiers = new HashMap<>();
     }
 
     private void clearFields() {
@@ -293,14 +281,18 @@ public class mainJFrame extends javax.swing.JFrame {
 
     private void compileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compileButtonMouseClicked
         // TODO add your handling code here:
-        lexicTools.setText(codeTextPane.getText());
-        lexicTools.readCharacter();
-        // Esta parte aún está pendiente
-        // PRESTALE MUCHA ATENCION
-        //
-        //
-        //
-        //
+        this.textPaneString = null;
+        this.textPaneString = codeTextPane.getText();
+        
+        if (this.textPaneString.equals(this.temporalText)) {
+            System.out.println("El texto no cambio");
+        } else {
+            lexicTools.setText(codeTextPane.getText());
+            lexicTools.readCharacter();
+            this.temporalText = this.textPaneString;
+        }
+        
+        
     }//GEN-LAST:event_compileButtonMouseClicked
 
     /**

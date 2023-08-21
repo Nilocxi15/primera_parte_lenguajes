@@ -9,7 +9,7 @@ package logic;
  * @author hamme
  */
 public class tokens {
-    private String tokenString;
+    private final String tokenString;
 
     public tokens(String tokenString) {
         this.tokenString = tokenString; 
