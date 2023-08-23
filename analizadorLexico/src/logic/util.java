@@ -14,11 +14,20 @@ public class util {
 
     private String text, wordCompleted;
     private boolean isToken = false;
-    private int wordsAmount = 0;
+    private boolean tokenIsFilled = false;
+    private int wordsAmount;
     private char[] specialCharacters = {'+', '-', '*', '/', '%', '=', '!',
         '<', '>', '.', '#', '(', ')', '{', '}', '[', ']', ',', ';', ':', '_'};
 
-    dictionaryTokens dicTok = new dictionaryTokens();
+    dictionaryTokens dictionary = new dictionaryTokens();
+
+    private ArrayList<token> token;
+    private ArrayList<word> word;
+
+    public void initArrayLists() {
+        token = new ArrayList<>();
+        word = new ArrayList<>();
+    }
 
     public void setText(String textCharacterString) {
         this.text = textCharacterString;
@@ -26,10 +35,11 @@ public class util {
 
     public void readCharacter() {
 
+        dictionary.initDictionary();
+        dictionary.initClasificationDictionary();
+
         this.wordsAmount = 0;
         this.wordCompleted = null;
-
-        ArrayList<word> word = new ArrayList<>();
 
         if (text != null) {
             for (int i = 0; i < text.length(); i++) {
@@ -49,29 +59,100 @@ public class util {
                     if (this.wordCompleted != null) {
                         wordsAmount++;
                         word.add(new word(wordCompleted));
+
+                        for (int j = 0; j <= 60; j++) {
+
+                            if (wordCompleted.equals(dictionary.getToken(j))) {
+
+                                if (tokenIsFilled == false) {
+                                    token.add(new token(dictionary.getClasification(j)));
+                                    isToken = true;
+                                    tokenIsFilled = true;
+                                }
+                            }
+
+                        }
+
+                        if (isToken == false) {
+                            try {
+                                Double.parseDouble(wordCompleted);
+                                token.add(new token("Constante"));
+                                isToken = true;
+                            } catch (NumberFormatException ex) {
+                            }
+                        }
+
+                        if (isToken == false) {
+                            token.add(new token("Identificador"));
+                        }
+
+                        this.isToken = false;
+                        this.tokenIsFilled = false;
                     }
                     this.wordCompleted = null;
                 } else {
 
                     if (wordCompleted != null) {
-                        //this.wordCompleted += individualCharacter;
                         this.wordCompleted += individualCharacter;
                     } else {
                         this.wordCompleted = individualCharacter;
                     }
 
                 }
-            }
 
-            for (int i = 0; i <= wordsAmount + 1; i++) {
-                System.out.println("El token " + i + " es:" + word.get(i));
+                if (i == text.length() - 1) {
+                    if (this.wordCompleted != null) {
+                        wordsAmount++;
+                        word.add(new word(wordCompleted));
+
+                        for (int j = 0; j <= 60; j++) {
+
+                            if (wordCompleted.equals(dictionary.getToken(j))) {
+
+                                if (tokenIsFilled == false) {
+                                    token.add(new token(dictionary.getClasification(j)));
+                                    isToken = true;
+                                    tokenIsFilled = true;
+                                }
+                            }
+
+                        }
+
+                        if (isToken == false) {
+                            try {
+                                Double.parseDouble(wordCompleted);
+                                token.add(new token("Constante"));
+                                isToken = true;
+                            } catch (NumberFormatException ex) {
+                            }
+                        }
+
+                        if (isToken == false) {
+                            token.add(new token("Identificador"));
+                        }
+
+                        this.isToken = false;
+                        this.tokenIsFilled = false;
+                    }
+                    this.wordCompleted = null;
+                }
             }
         }
     }
 
     public String getWord(int positionValue) {
-        String content = " ";
+        String content = word.get(positionValue).toString();
 
         return content;
+    }
+
+    public String getToken(int positionValue) {
+        String content = token.get(positionValue).toString();
+
+        return content;
+    }
+
+    public int getWordsAmount() {
+        return wordsAmount;
     }
 }

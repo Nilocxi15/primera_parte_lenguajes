@@ -8,16 +8,16 @@ package logic;
  *
  * @author hamme
  */
-public class tokens {
+public class token {
     private final String tokenString;
 
-    public tokens(String tokenString) {
+    public token(String tokenString) {
         this.tokenString = tokenString; 
     }
 
     @Override
     public String toString() {
-        return "tokens{" + "tokenString=" + tokenString + '}';
+        return tokenString;
     }
     
     

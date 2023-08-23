@@ -17,7 +17,7 @@ public class word {
 
     @Override
     public String toString() {
-        return "word{" + "wordString=" + wordString + '}';
+        return wordString;
     }
         
 }

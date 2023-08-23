@@ -9,7 +9,7 @@ import compilerTools.Functions;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.Timer;
-import logic.dictionaryTokens;
+import javax.swing.table.DefaultTableModel;
 import logic.util;
 
 /**
@@ -22,15 +22,12 @@ public class mainJFrame extends javax.swing.JFrame {
     private Directory directory;
     private Timer timerKeyReleased;
 
-    dictionaryTokens dictionary = new dictionaryTokens();
     util lexicTools = new util();
 
     public mainJFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
 
-        dictionary.initDictionary();
-        dictionary.initClasificationDictionary();
         init();
     }
 
@@ -50,29 +47,6 @@ public class mainJFrame extends javax.swing.JFrame {
         Functions.insertAsteriskInName(this, codeTextPane, () -> {
             timerKeyReleased.restart();
         });
-    }
-
-    private void clearFields() {
-
-    }
-
-    private void compile() {
-        clearFields();
-        lexicalAnalysis();
-        fillTableTokens();
-        printConsole();
-    }
-
-    private void lexicalAnalysis() {
-
-    }
-
-    private void fillTableTokens() {
-
-    }
-
-    private void printConsole() {
-
     }
 
     /**
@@ -243,28 +217,26 @@ public class mainJFrame extends javax.swing.JFrame {
     private void newMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuActionPerformed
         // TODO add your handling code here:
         directory.New();
-        clearFields();
     }//GEN-LAST:event_newMenuActionPerformed
 
     private void openMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuActionPerformed
         // TODO add your handling code here:
         if (directory.Open()) {
-            // colorAnalysis(); se tiene que crear el método
-            clearFields();
+            // colorAnalysis(); se 
         }
     }//GEN-LAST:event_openMenuActionPerformed
 
     private void saveMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuActionPerformed
         // TODO add your handling code here:
         if (directory.Save()) {
-            clearFields();
+
         }
     }//GEN-LAST:event_saveMenuActionPerformed
 
     private void saveAsMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuActionPerformed
         // TODO add your handling code here:
         if (directory.SaveAs()) {
-            clearFields();
+
         }
     }//GEN-LAST:event_saveAsMenuActionPerformed
 
@@ -272,27 +244,37 @@ public class mainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (getTitle().contains("*") || getTitle().equals(title)) {
             if (directory.Save()) {
-                compile();
-            } else {
-                compile();
+
             }
         }
     }//GEN-LAST:event_compileButtonActionPerformed
+
+    private void printTable() {
+        DefaultTableModel model = (DefaultTableModel) reportTable.getModel();
+        model.setRowCount(lexicTools.getWordsAmount());
+
+        for (int i = 0; i <= lexicTools.getWordsAmount() - 1; i++) {
+            model.setValueAt(lexicTools.getToken(i), i, 0);
+            model.setValueAt(lexicTools.getWord(i), i, 1);
+            model.setValueAt(lexicTools.getWord(i), i, 2);
+        }
+    }
 
     private void compileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compileButtonMouseClicked
         // TODO add your handling code here:
         this.textPaneString = null;
         this.textPaneString = codeTextPane.getText();
-        
+
         if (this.textPaneString.equals(this.temporalText)) {
             System.out.println("El texto no cambio");
         } else {
             lexicTools.setText(codeTextPane.getText());
+            lexicTools.initArrayLists();
             lexicTools.readCharacter();
             this.temporalText = this.textPaneString;
         }
-        
-        
+
+        printTable();
     }//GEN-LAST:event_compileButtonMouseClicked
 
     /**
