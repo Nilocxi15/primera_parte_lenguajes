@@ -1,15 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import compilerTools.Directory;
+import compilerTools.ErrorLSSL;
 import compilerTools.Functions;
+import compilerTools.Grammar;
+import compilerTools.Production;
+import compilerTools.TextColor;
+import compilerTools.Token;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import logic.util;
 
 /**
@@ -21,6 +29,12 @@ public class mainJFrame extends javax.swing.JFrame {
     private String title, temporalText, textPaneString;
     private Directory directory;
     private Timer timerKeyReleased;
+    private ArrayList<Token> tokens;
+    private ArrayList<ErrorLSSL> errors;
+    private ArrayList<TextColor> textColor;
+    private ArrayList<Production> idProduction;
+    private HashMap<String, String> indentifiers;
+    private boolean compiledCode = false;
 
     util lexicTools = new util();
 
@@ -47,6 +61,15 @@ public class mainJFrame extends javax.swing.JFrame {
         Functions.insertAsteriskInName(this, codeTextPane, () -> {
             timerKeyReleased.restart();
         });
+        timerKeyReleased = new Timer(300, ((e) -> {
+            timerKeyReleased.stop();
+            colorAnalysis();
+        }));
+        tokens = new ArrayList<>();
+        errors = new ArrayList<>();
+        textColor = new ArrayList<>();
+        idProduction = new ArrayList<>();
+        indentifiers = new HashMap<>();
     }
 
     /**
@@ -217,26 +240,28 @@ public class mainJFrame extends javax.swing.JFrame {
     private void newMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuActionPerformed
         // TODO add your handling code here:
         directory.New();
+        clearFields();
     }//GEN-LAST:event_newMenuActionPerformed
 
     private void openMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuActionPerformed
         // TODO add your handling code here:
         if (directory.Open()) {
-            // colorAnalysis(); se 
+            colorAnalysis();
+            clearFields();
         }
     }//GEN-LAST:event_openMenuActionPerformed
 
     private void saveMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuActionPerformed
         // TODO add your handling code here:
         if (directory.Save()) {
-
+            clearFields();
         }
     }//GEN-LAST:event_saveMenuActionPerformed
 
     private void saveAsMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuActionPerformed
         // TODO add your handling code here:
         if (directory.SaveAs()) {
-
+            clearFields();
         }
     }//GEN-LAST:event_saveAsMenuActionPerformed
 
@@ -244,19 +269,66 @@ public class mainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (getTitle().contains("*") || getTitle().equals(title)) {
             if (directory.Save()) {
-
+                compile();
             }
+        } else {
+            compile();
         }
     }//GEN-LAST:event_compileButtonActionPerformed
 
-    private void printTable() {
-        DefaultTableModel model = (DefaultTableModel) reportTable.getModel();
-        model.setRowCount(lexicTools.getWordsAmount());
+    private void colorAnalysis() {
 
-        for (int i = 0; i <= lexicTools.getWordsAmount() - 1; i++) {
-            model.setValueAt(lexicTools.getToken(i), i, 0);
-            model.setValueAt(lexicTools.getWord(i), i, 1);
-            model.setValueAt(lexicTools.getWord(i), i, 2);
+    }
+
+    private void clearFields() {
+        Functions.clearDataInTable(reportTable);
+        terminalTextArea.setText("");
+        tokens.clear();
+        errors.clear();
+        idProduction.clear();
+        indentifiers.clear();
+        compiledCode = false;
+    }
+
+    private void compile() {
+        clearFields();
+        lexicalAnalysis();
+        printTable();
+        syntacticAnalysis();
+        printConsole();
+        compiledCode = true;
+    }
+
+    private void lexicalAnalysis() {
+
+    }
+
+    private void printTable() {
+        tokens.forEach(token -> {
+            Object[] data = new Object[]{token.getLexicalComp(), token.getLexeme(),
+                "[" + token.getLine() + ", " + token.getColumn() + "]"};
+            Functions.addRowDataInTable(reportTable, data);
+        });
+    }
+
+    private void syntacticAnalysis() {
+        Grammar grammatic = new Grammar(tokens, errors);
+
+        grammatic.show();
+    }
+
+    private void printConsole() {
+        int sizeErrors = errors.size();
+        if (sizeErrors > 0) {
+            Functions.sortErrorsByLineAndColumn(errors);
+            String stringErrors = "\n";
+            for (ErrorLSSL error : errors) {
+                String stringError = String.valueOf(errors);
+                stringErrors += stringError + "\n";
+            }
+            terminalTextArea.setText(stringErrors + "\nLa compilacion no fue exitosa");
+        } else {
+            terminalTextArea.setText("Compilacion exitosa");
         }
     }
 
@@ -274,6 +346,10 @@ public class mainJFrame extends javax.swing.JFrame {
             this.temporalText = this.textPaneString;
         }
 
+        if (!errors.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No se puede compilar el codigo. ERROR 001");
+        }
+
         printTable();
     }//GEN-LAST:event_compileButtonMouseClicked
 
@@ -282,35 +358,19 @@ public class mainJFrame extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(mainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(mainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(mainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(mainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(new FlatMacDarkLaf());
                 new mainJFrame().setVisible(true);
+            } catch (UnsupportedLookAndFeelException ex) {
+                Logger.getLogger(mainJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

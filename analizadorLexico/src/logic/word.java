@@ -9,9 +9,10 @@ package logic;
  * @author hamme
  */
 public class word {
+
     private String wordString;
-    
-    public word(String concatenatedWord){
+
+    public word(String concatenatedWord) {
         this.wordString = concatenatedWord;
     }
 
@@ -19,5 +20,5 @@ public class word {
     public String toString() {
         return wordString;
     }
-        
+
 }
