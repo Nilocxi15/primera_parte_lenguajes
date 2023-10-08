@@ -5,12 +5,27 @@
 package gui;
 
 import compilerTools.Directory;
+import compilerTools.ErrorLSSL;
 import compilerTools.Functions;
+import compilerTools.Grammar;
+import compilerTools.Production;
+import compilerTools.TextColor;
+import compilerTools.Token;
+import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Timer;
-import javax.swing.table.DefaultTableModel;
-import logic.util;
 
 /**
  *
@@ -18,35 +33,24 @@ import logic.util;
  */
 public class mainJFrame extends javax.swing.JFrame {
 
-    private String title, temporalText, textPaneString;
+    private String title;
     private Directory directory;
     private Timer timerKeyReleased;
 
-    util lexicTools = new util();
+    private ArrayList<Token> tokens;
+    private ArrayList<ErrorLSSL> errors;
+    private ArrayList<TextColor> textColor;
+    private ArrayList<Production> idProduction; //VERIFICAR
+
+    private HashMap<String, String> identifiers;
+
+    private boolean codeHasBeenCompiled = false; // VERIFICAR
 
     public mainJFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
 
         init();
-    }
-
-    private void init() {
-        title = "";
-        setLocationRelativeTo(null);
-        setTitle(title);
-        directory = new Directory(this, codeTextPane, title, ".txt");
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                directory.Exit();
-                System.exit(0);
-            }
-        });
-        Functions.setLineNumberOnJTextComponent(codeTextPane);
-        Functions.insertAsteriskInName(this, codeTextPane, () -> {
-            timerKeyReleased.restart();
-        });
     }
 
     /**
@@ -93,7 +97,7 @@ public class mainJFrame extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Token", "Patrón", "Lexema", "Línea,Columna"
+                "Token", "Lexema", "Línea, Columna", "Patrón"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -142,11 +146,11 @@ public class mainJFrame extends javax.swing.JFrame {
                         .addComponent(compileButton)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane3))
-                    .addGroup(rootPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rootPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         jMenu1.setText("Archivo");
@@ -208,35 +212,160 @@ public class mainJFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(rootPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(rootPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void init() {
+        title = "Nuevo Archivo";
+        setLocationRelativeTo(null);
+        setTitle(title);
+        directory = new Directory(this, codeTextPane, title, ".txt");
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                directory.Exit();
+                System.exit(0);
+            }
+        });
+        Functions.setLineNumberOnJTextComponent(codeTextPane);
+        timerKeyReleased = new Timer(300, ((e) -> {
+            timerKeyReleased.stop();
+            colorAnalysis();
+        }));
+        Functions.insertAsteriskInName(this, codeTextPane, () -> {
+            timerKeyReleased.restart();
+        });
+        tokens = new ArrayList<>();
+        errors = new ArrayList<>();
+        textColor = new ArrayList<>();
+        idProduction = new ArrayList<>();   //VERIFICAR
+        identifiers = new HashMap<>();
+    }
+
+    private void colorAnalysis() {
+        textColor.clear();
+        LexerColor lexer;
+
+        try {
+            File code = new File("color.encrypter");
+            FileOutputStream output = new FileOutputStream(code);
+            byte[] bytesText = codeTextPane.getText().getBytes();
+            output.write(bytesText);
+            BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(code), "UTF-8"));
+            lexer = new LexerColor(input);
+
+            while (true) {
+                TextColor txtColor = lexer.yylex();
+                if (txtColor == null) {
+                    break;
+                }
+                textColor.add(txtColor);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(mainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(mainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Functions.colorTextPane(textColor, codeTextPane, new Color(40, 40, 40));
+    }
+
+    private void clearFields() {
+        Functions.clearDataInTable(reportTable);
+        terminalTextArea.setText("");
+        tokens.clear();
+        errors.clear();
+        idProduction.clear();   //VERIFICAR
+        identifiers.clear();
+        codeHasBeenCompiled = false;
+    }
+
+    private void lexicalAnalysis() {
+        Lexer lexer;
+
+        try {
+            File code = new File("code.encrypter");
+            FileOutputStream output = new FileOutputStream(code);
+            byte[] bytesText = codeTextPane.getText().getBytes();
+            output.write(bytesText);
+            BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(code), "UTF-8"));
+            lexer = new Lexer(input);
+
+            while (true) {
+                Token token = lexer.yylex();
+                if (token == null) {
+                    break;
+                }
+                tokens.add(token);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(mainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(mainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void printTable() {
+        tokens.forEach(token -> {
+            Object[] data = new Object[]{token.getLexicalComp(), token.getLexeme(),
+                "[" + token.getLine() + ", " + token.getColumn() + "]"};
+            Functions.addRowDataInTable(reportTable, data);
+        });
+    }
+
+    private void syntacticAnalysis() {  //VERIFICAR TODO EL CONTENIDO
+        Grammar grammatic = new Grammar(tokens, errors);
+
+        grammatic.show();
+    }
+
+    private void printConsole() {
+        int sizeErrors = errors.size();
+        if (sizeErrors > 0) {
+            Functions.sortErrorsByLineAndColumn(errors);
+            String stringErrors = "\n";
+
+            for (ErrorLSSL error : errors) {
+                String stringError = String.valueOf(error);
+                stringError += stringErrors + "\n";
+            }
+
+            terminalTextArea.setText("Se encontraron los siguientes errores: \n"
+                    + stringErrors);
+        } else {
+            terminalTextArea.setText("No se encontró ningún error sintáctico en el código :)");
+        }
+    }
+
     private void newMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuActionPerformed
         // TODO add your handling code here:
         directory.New();
+        clearFields();
     }//GEN-LAST:event_newMenuActionPerformed
 
     private void openMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuActionPerformed
         // TODO add your handling code here:
         if (directory.Open()) {
-            // colorAnalysis(); se 
+            colorAnalysis();
+            clearFields();
         }
     }//GEN-LAST:event_openMenuActionPerformed
 
     private void saveMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuActionPerformed
         // TODO add your handling code here:
         if (directory.Save()) {
-
+            clearFields();
         }
     }//GEN-LAST:event_saveMenuActionPerformed
 
     private void saveAsMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuActionPerformed
         // TODO add your handling code here:
         if (directory.SaveAs()) {
-
+            clearFields();
         }
     }//GEN-LAST:event_saveAsMenuActionPerformed
 
@@ -249,32 +378,15 @@ public class mainJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_compileButtonActionPerformed
 
-    private void printTable() {
-        DefaultTableModel model = (DefaultTableModel) reportTable.getModel();
-        model.setRowCount(lexicTools.getWordsAmount());
-
-        for (int i = 0; i <= lexicTools.getWordsAmount() - 1; i++) {
-            model.setValueAt(lexicTools.getToken(i), i, 0);
-            model.setValueAt(lexicTools.getWord(i), i, 1);
-            model.setValueAt(lexicTools.getWord(i), i, 2);
-        }
-    }
 
     private void compileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compileButtonMouseClicked
         // TODO add your handling code here:
-        this.textPaneString = null;
-        this.textPaneString = codeTextPane.getText();
-
-        if (this.textPaneString.equals(this.temporalText)) {
-            System.out.println("El texto no cambio");
-        } else {
-            lexicTools.setText(codeTextPane.getText());
-            lexicTools.initArrayLists();
-            lexicTools.readCharacter();
-            this.temporalText = this.textPaneString;
-        }
-
+        clearFields();
+        lexicalAnalysis();
         printTable();
+        syntacticAnalysis();
+        printConsole();
+        codeHasBeenCompiled = true;
     }//GEN-LAST:event_compileButtonMouseClicked
 
     /**
