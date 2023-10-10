@@ -10,9 +10,11 @@ import compilerTools.Token;
         return new Token(lexeme, lexicalComp, line+1, column+1);
     }
 %}
-    LineTerminator = \r|\n|\r\n
-    InputCharacter = [^\r\n]
-    WhiteSpace     = {LineTerminator} | [ \t\f]
+    LineTerminator  = \r|\n|\r\n
+    InputCharacter  = [^\r\n]
+    WhiteSpace      = {LineTerminator} | [ \t\f]
+    Quote           = [\"]
+    SimpleQuote     = [\']
 
     /* comments */
     Comment = {CustomComment}
@@ -26,9 +28,10 @@ import compilerTools.Token;
 
     Identifier = [:jletter:] [:jletterdigit:]*
 
-    DecIntegerLiteral = 0 | [1-9][0-9]*
-    Letter            = [A-Za-zÑñ_ÁÉÍÓÚáéíóúÜü]
-    LetterOrDigit     = {Letter} | {DecIntegerLiteral}
+    DecIntegerLiteral           = 0 | [1-9][0-9]*
+    Letter                      = [A-Za-zÑñ_ÁÉÍÓÚáéíóúÜü]
+    LetterOrDigit               = {Letter} | {DecIntegerLiteral}
+    LetterOrDigitOrWhiteSpace   = {LetterOrDigit} | {WhiteSpace}
 
     /* arithmetic */
     Addition        = "+"
@@ -48,9 +51,8 @@ import compilerTools.Token;
 
     /* Constants */
     Decimal         = [0-9]+ "." [0-9]+
-    String          = " " " [^*] ~" " " | " " " "*"+ " " "
-    SimpleString    = " ' " [^*] ~" " " | " " " "*"+ " ' "
     Boolean         = "True" | "False"
+    StringArray     = {Quote} {LetterOrDigitOrWhiteSpace}* {Quote}
     
     Arithmetic  = {Addition} | {Subtraction} | {Exponent} | {Division} | {Module} | {Multiplication}
     Comparison  = {Equal} | {Different} | {GreaterThan} | {SmallerThan} | {LessThanOrEqualTo} | {GreaterThanOrEqualTo}
@@ -60,12 +62,12 @@ import compilerTools.Token;
                 "else" | "except" | "finally" | "for" | "from" | "global" | "if" | "import" |
                 "in" | "is" | "lambda" | "None" | "nonlocal" | "pass" | "raise" | "return" |
                 "try" | "while" | "with" | "yield"
-    Constants   = {DecIntegerLiteral} | {Decimal} | {String} | {SimpleString} | {Boolean}
+    Constants   = {DecIntegerLiteral} | {Decimal} | {Boolean} | {StringArray}
     Others      = "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":"
     Identifiers = ({Letter} | "_") ({LetterOrDigit}| "_")*
 %%
 
-{Comment}|{WhiteSpace} { /*Ignore*/ }
+{Comment} | {WhiteSpace} { /*Ignore*/ }
 
 /* Identifier */
 \${Identifier} { return token(yytext(), "IDENTIFICADOR", yyline, yycolumn); }
