@@ -50,9 +50,10 @@ import compilerTools.Token;
     GreaterThanOrEqualTo= ">=" 
 
     /* Constants */
-    Decimal         = [0-9]+ "." [0-9]+
-    Boolean         = "True" | "False"
-    StringArray     = {Quote} {LetterOrDigitOrWhiteSpace}* {Quote}
+    Decimal             = [0-9]+ "." [0-9]+
+    Boolean             = "True" | "False"
+    StringArray         = {Quote} {LetterOrDigitOrWhiteSpace}* {Quote}
+    SimpleStringArray   = {SimpleQuote} {LetterOrDigitOrWhiteSpace}* {SimpleQuote}
     
     Arithmetic  = {Addition} | {Subtraction} | {Exponent} | {Division} | {Module} | {Multiplication}
     Comparison  = {Equal} | {Different} | {GreaterThan} | {SmallerThan} | {LessThanOrEqualTo} | {GreaterThanOrEqualTo}
@@ -62,7 +63,7 @@ import compilerTools.Token;
                 "else" | "except" | "finally" | "for" | "from" | "global" | "if" | "import" |
                 "in" | "is" | "lambda" | "None" | "nonlocal" | "pass" | "raise" | "return" |
                 "try" | "while" | "with" | "yield"
-    Constants   = {DecIntegerLiteral} | {Decimal} | {Boolean} | {StringArray}
+    Constants   = {DecIntegerLiteral} | {Decimal} | {Boolean} | {StringArray} | {SimpleStringArray}
     Others      = "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":"
     Identifiers = ({Letter} | "_") ({LetterOrDigit}| "_")*
 %%
