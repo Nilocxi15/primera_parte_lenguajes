@@ -27,6 +27,8 @@ import compilerTools.Token;
     Identifier = [:jletter:] [:jletterdigit:]*
 
     DecIntegerLiteral = 0 | [1-9][0-9]*
+    Letter            = [A-Za-zÑñ_ÁÉÍÓÚáéíóúÜü]
+    LetterOrDigit     = {Letter} | {DecIntegerLiteral}
 
     /* arithmetic */
     Addition        = "+"
@@ -50,15 +52,17 @@ import compilerTools.Token;
     SimpleString    = " ' " [^*] ~" " " | " " " "*"+ " ' "
     Boolean         = "True" | "False"
     
-    Arithmetic = {Addition} | {Subtraction} | {Exponent} | {Division} | {Module} | {Multiplication}
-    Comparison = {Equal} | {Different} | {GreaterThan} | {SmallerThan} | {LessThanOrEqualTo} | {GreaterThanOrEqualTo}
-    Logicians = "and" | "or" | "not"
-    Assignment = {Arithmetic} "="
-    KeyWords = "as" | "assert" | "break" | "class" | "continue" | "def" | "del" | "elif"
+    Arithmetic  = {Addition} | {Subtraction} | {Exponent} | {Division} | {Module} | {Multiplication}
+    Comparison  = {Equal} | {Different} | {GreaterThan} | {SmallerThan} | {LessThanOrEqualTo} | {GreaterThanOrEqualTo}
+    Logicians   = "and" | "or" | "not"
+    Assignment  = {Arithmetic} "=" | "="
+    KeyWords    = "as" | "assert" | "break" | "class" | "continue" | "def" | "del" | "elif"
                 "else" | "except" | "finally" | "for" | "from" | "global" | "if" | "import" |
                 "in" | "is" | "lambda" | "None" | "nonlocal" | "pass" | "raise" | "return" |
                 "try" | "while" | "with" | "yield"
-    Constants = {DecIntegerLiteral} | {Decimal} | {String} | {SimpleString} | {Boolean}
+    Constants   = {DecIntegerLiteral} | {Decimal} | {String} | {SimpleString} | {Boolean}
+    Others      = "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":"
+    Identifiers = ({Letter} | "_") ({LetterOrDigit}| "_")*
 %%
 
 {Comment}|{WhiteSpace} { /*Ignore*/ }
@@ -83,5 +87,11 @@ import compilerTools.Token;
 
 /* Constants */
 {Constants} { return token(yytext(), "CONSTANTES", yyline, yycolumn); }
+
+/* Others */
+{Others} { return token(yytext(), "OTROS", yyline, yycolumn); }
+
+/* Identifiers */
+{Identifiers} { return token(yytext(), "IDENTIFICADORES", yyline, yycolumn); }
 
 . { return token(yytext(), "ERROR", yyline, yycolumn); }
