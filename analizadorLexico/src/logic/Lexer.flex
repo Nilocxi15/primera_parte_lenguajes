@@ -64,7 +64,7 @@ import compilerTools.Token;
                 "in" | "is" | "lambda" | "None" | "nonlocal" | "pass" | "raise" | "return" |
                 "try" | "while" | "with" | "yield"
     Constants   = {DecIntegerLiteral} | {Decimal} | {Boolean} | {StringArray} | {SimpleStringArray}
-    Others      = "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":"
+    Others      = "[" | "]" | ";" | ":"
     Identifiers = ({Letter} | "_") ({LetterOrDigit}| "_")*
 %%
 
@@ -96,5 +96,14 @@ import compilerTools.Token;
 
 /* Identifiers */
 {Identifiers} { return token(yytext(), "IDENTIFICADORES", yyline, yycolumn); }
+
+/* Operadores de agrupación */
+"(" { return token(yytext(), "PARENTESIS_A", yyline, yycolumn); }
+")" { return token(yytext(), "PARENTESIS_B", yyline, yycolumn); }
+"{" { return token(yytext(), "LLAVE_A", yyline, yycolumn); }
+"}" { return token(yytext(), "LLAVE_B", yyline, yycolumn); }
+
+/* Signos de puntuación */
+"," { return token(yytext(), "COMA", yyline, yycolumn); }
 
 . { return token(yytext(), "ERROR", yyline, yycolumn); }

@@ -34,6 +34,11 @@ import javax.swing.Timer;
  * @author hamme
  */
 public class mainJFrame extends javax.swing.JFrame {
+    
+    /* Disculpe auxiliar, pero la verdad no le entendi al curso
+    y apenas y me dio tiempo de hacer la tarea :(
+    Toco repetir para el siguiente año. A ver si se puede
+    */
 
     private String title;
     private Directory directory;
@@ -71,6 +76,8 @@ public class mainJFrame extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         reportTable = new javax.swing.JTable();
         compileButton = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        syntacticTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         newMenu = new javax.swing.JMenuItem();
@@ -92,10 +99,7 @@ public class mainJFrame extends javax.swing.JFrame {
 
         reportTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Token", "Lexema", "Línea, Columna", "Patrón"
@@ -123,6 +127,16 @@ public class mainJFrame extends javax.swing.JFrame {
             }
         });
 
+        syntacticTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(syntacticTable);
+
         javax.swing.GroupLayout rootPanelLayout = new javax.swing.GroupLayout(rootPanel);
         rootPanel.setLayout(rootPanelLayout);
         rootPanelLayout.setHorizontalGroup(
@@ -135,7 +149,8 @@ public class mainJFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(compileButton))
+                    .addComponent(compileButton)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         rootPanelLayout.setVerticalGroup(
@@ -146,12 +161,14 @@ public class mainJFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rootPanelLayout.createSequentialGroup()
                         .addComponent(compileButton)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rootPanelLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(42, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2)))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         jMenu1.setText("Archivo");
@@ -225,6 +242,7 @@ public class mainJFrame extends javax.swing.JFrame {
         clearFields();
         lexicalAnalysis();
         printTable();
+        readProductions();
         syntacticAnalysis();
         printConsole();
         codeHasBeenCompiled = true;
@@ -332,8 +350,9 @@ public class mainJFrame extends javax.swing.JFrame {
 
         grammatic.delete(new String[]{"ERROR", "ERROR_1", "ERROR_2"}, 1);
 
-        grammatic.group("VARIABLE", "ASIGNACION");
-        
+        grammatic.group("VARIABLES", "(IDENTIFICADORES | COMA IDENTIFICADORES)+ ASIGNACION (CONSTANTES | COMA CONSTANTES"+
+                "| ARITMETICO CONSTANTES)+");
+
         grammatic.show();
     }
 
@@ -382,6 +401,14 @@ public class mainJFrame extends javax.swing.JFrame {
             clearFields();
         }
     }//GEN-LAST:event_saveAsMenuActionPerformed
+
+    private void readProductions() {
+        tokens.forEach(token -> {
+            Object[] data = new Object[]{token.getLexicalComp(), token.getLexeme(),
+                "[" + token.getLine() + ", " + token.getColumn() + "]"};
+            Functions.addRowDataInTable(reportTable, data);
+        });
+    }
 
     private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
         // TODO add your handling code here:
@@ -460,12 +487,14 @@ public class mainJFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JMenuItem newMenu;
     private javax.swing.JMenuItem openMenu;
     private javax.swing.JTable reportTable;
     private javax.swing.JPanel rootPanel;
     private javax.swing.JMenuItem saveAsMenu;
     private javax.swing.JMenuItem saveMenu;
+    private javax.swing.JTable syntacticTable;
     private javax.swing.JTextArea terminalTextArea;
     // End of variables declaration//GEN-END:variables
 }
