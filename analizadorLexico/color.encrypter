@@ -199,6 +199,3 @@ result = n1 / n2 / n3 / n4 / n5 # result = 1.25e-05
 
 result = n3*(n1*n2+n3-n4 )/(n5 - n1*n2) # result = 30.0
 print (result) # 90
-
-10.5  "Esto es una prueba"
-'Prueba 2'

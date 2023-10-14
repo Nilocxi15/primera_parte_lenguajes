@@ -1054,7 +1054,7 @@ class Lexer {
           // fall through
           case 13: break;
           case 3:
-            { return token(yytext(), "ARITMÉTICO", yyline, yycolumn);
+            { return token(yytext(), "ARITMETICO", yyline, yycolumn);
             }
           // fall through
           case 14: break;
@@ -1069,12 +1069,12 @@ class Lexer {
           // fall through
           case 16: break;
           case 6:
-            { return token(yytext(), "COMPARACIÓN", yyline, yycolumn);
+            { return token(yytext(), "COMPARACION", yyline, yycolumn);
             }
           // fall through
           case 17: break;
           case 7:
-            { return token(yytext(), "ASIGNACIÓN", yyline, yycolumn);
+            { return token(yytext(), "ASIGNACION", yyline, yycolumn);
             }
           // fall through
           case 18: break;
@@ -1094,7 +1094,7 @@ class Lexer {
           // fall through
           case 21: break;
           case 11:
-            { return token(yytext(), "LÓGICOS", yyline, yycolumn);
+            { return token(yytext(), "LOGICOS", yyline, yycolumn);
             }
           // fall through
           case 22: break;

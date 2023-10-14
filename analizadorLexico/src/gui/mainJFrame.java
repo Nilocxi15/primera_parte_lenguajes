@@ -4,6 +4,7 @@
  */
 package gui;
 
+import compilerTools.CodeBlock;
 import compilerTools.Directory;
 import compilerTools.ErrorLSSL;
 import compilerTools.Functions;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -49,7 +51,6 @@ public class mainJFrame extends javax.swing.JFrame {
     public mainJFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
-
         init();
     }
 
@@ -220,6 +221,15 @@ public class mainJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void compile() {
+        clearFields();
+        lexicalAnalysis();
+        printTable();
+        syntacticAnalysis();
+        printConsole();
+        codeHasBeenCompiled = true;
+    }
+
     private void init() {
         title = "Nuevo Archivo";
         setLocationRelativeTo(null);
@@ -320,6 +330,10 @@ public class mainJFrame extends javax.swing.JFrame {
     private void syntacticAnalysis() {  //VERIFICAR TODO EL CONTENIDO
         Grammar grammatic = new Grammar(tokens, errors);
 
+        grammatic.delete(new String[]{"ERROR", "ERROR_1", "ERROR_2"}, 1);
+
+        grammatic.group("VARIABLE", "ASIGNACION");
+        
         grammatic.show();
     }
 
@@ -331,7 +345,7 @@ public class mainJFrame extends javax.swing.JFrame {
 
             for (ErrorLSSL error : errors) {
                 String stringError = String.valueOf(error);
-                stringError += stringErrors + "\n";
+                stringErrors += stringError + "\n";
             }
 
             terminalTextArea.setText("Se encontraron los siguientes errores: \n"
@@ -371,22 +385,32 @@ public class mainJFrame extends javax.swing.JFrame {
 
     private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
         // TODO add your handling code here:
-        if (getTitle().contains("*") || getTitle().equals(title)) {
-            if (directory.Save()) {
 
-            }
-        }
     }//GEN-LAST:event_compileButtonActionPerformed
 
 
     private void compileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compileButtonMouseClicked
         // TODO add your handling code here:
-        clearFields();
-        lexicalAnalysis();
-        printTable();
-        syntacticAnalysis();
-        printConsole();
-        codeHasBeenCompiled = true;
+
+        if (getTitle().contains("*") || getTitle().equals(title)) {
+            if (directory.Save()) {
+                compile();
+            }
+        } else {
+            compile();
+        }
+
+        if (codeHasBeenCompiled) {
+            if (errors.size() > 0) {
+                JOptionPane.showMessageDialog(null, "Se econtraron uno o más errores en el código :)",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                CodeBlock codeBlock = Functions.splitCodeInCodeBlocks(tokens, "{", "}", ";");
+                System.out.println(codeBlock);
+                ArrayList<String> blocksOfCode = codeBlock.getBlocksOfCodeInOrderOfExec();
+                System.out.println(blocksOfCode);
+            }
+        }
     }//GEN-LAST:event_compileButtonMouseClicked
 
     /**

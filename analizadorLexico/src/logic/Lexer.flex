@@ -74,16 +74,16 @@ import compilerTools.Token;
 \${Identifier} { return token(yytext(), "IDENTIFICADOR", yyline, yycolumn); }
 
 /* Arithmetic */
-{Arithmetic} { return token(yytext(), "ARITMÉTICO", yyline, yycolumn); }
+{Arithmetic} { return token(yytext(), "ARITMETICO", yyline, yycolumn); }
 
 /* Comparison */
-{Comparison} { return token(yytext(), "COMPARACIÓN", yyline, yycolumn); }
+{Comparison} { return token(yytext(), "COMPARACION", yyline, yycolumn); }
 
 /* Logicians */
-{Logicians} { return token(yytext(), "LÓGICOS", yyline, yycolumn); }
+{Logicians} { return token(yytext(), "LOGICOS", yyline, yycolumn); }
 
 /* Assignment */
-{Assignment} { return token(yytext(), "ASIGNACIÓN", yyline, yycolumn); }
+{Assignment} { return token(yytext(), "ASIGNACION", yyline, yycolumn); }
 
 /* KeyWords */
 {KeyWords} { return token(yytext(), "PALABRAS CLAVE", yyline, yycolumn); }
