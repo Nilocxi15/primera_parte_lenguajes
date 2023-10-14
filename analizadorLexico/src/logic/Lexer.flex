@@ -64,7 +64,7 @@ import compilerTools.Token;
                 "in" | "is" | "lambda" | "None" | "nonlocal" | "pass" | "raise" | "return" |
                 "try" | "while" | "with" | "yield"
     Constants   = {DecIntegerLiteral} | {Decimal} | {Boolean} | {StringArray} | {SimpleStringArray}
-    Others      = "[" | "]" | ";" | ":"
+    Others      = "[" | "]" | ";" | ":" | "&" | "|" | "^" | "."
     Identifiers = ({Letter} | "_") ({LetterOrDigit}| "_")*
 %%
 
@@ -86,7 +86,7 @@ import compilerTools.Token;
 {Assignment} { return token(yytext(), "ASIGNACION", yyline, yycolumn); }
 
 /* KeyWords */
-{KeyWords} { return token(yytext(), "PALABRAS CLAVE", yyline, yycolumn); }
+{KeyWords} { return token(yytext(), "PALABRAS_CLAVE", yyline, yycolumn); }
 
 /* Constants */
 {Constants} { return token(yytext(), "CONSTANTES", yyline, yycolumn); }

@@ -351,7 +351,7 @@ public class mainJFrame extends javax.swing.JFrame {
         grammatic.delete(new String[]{"ERROR", "ERROR_1", "ERROR_2"}, 1);
 
         grammatic.group("VARIABLES", "(IDENTIFICADORES | COMA IDENTIFICADORES)+ ASIGNACION (CONSTANTES | COMA CONSTANTES"+
-                "| ARITMETICO CONSTANTES)+");
+                "| ARITMETICO CONSTANTES | COMPARACION | LOGICOS | OTROS | PALABRAS_CLAVE | COMA)+");
 
         grammatic.show();
     }
