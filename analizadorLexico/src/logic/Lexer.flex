@@ -51,7 +51,6 @@ import compilerTools.Token;
 
     /* Constants */
     Decimal             = [0-9]+ "." [0-9]+
-    Boolean             = "True" | "False"
     StringArray         = {Quote} {LetterOrDigitOrWhiteSpace}* {Quote}
     SimpleStringArray   = {SimpleQuote} {LetterOrDigitOrWhiteSpace}* {SimpleQuote}
     
@@ -59,16 +58,29 @@ import compilerTools.Token;
     Comparison  = {Equal} | {Different} | {GreaterThan} | {SmallerThan} | {LessThanOrEqualTo} | {GreaterThanOrEqualTo}
     Logicians   = "and" | "or" | "not"
     Assignment  = {Arithmetic} "=" | "="
-    KeyWords    = "as" | "assert" | "break" | "class" | "continue" | "def" | "del" | "elif"
-                "else" | "except" | "finally" | "for" | "from" | "global" | "if" | "import" |
-                "in" | "is" | "lambda" | "None" | "nonlocal" | "pass" | "raise" | "return" |
-                "try" | "while" | "with" | "yield"
-    Constants   = {DecIntegerLiteral} | {Decimal} | {Boolean} | {StringArray} | {SimpleStringArray}
+    KeyWords    = "as" | "assert" | "break" | "class" | "continue" | "def" | "del" | "except" |
+                "finally" | "for" | "from" | "global" | "import" | "in" | "is" | "lambda" | "None" | 
+                "nonlocal" | "pass" | "raise" | "return" | "try" | "while" | "with" | "yield"
+    Constants   = {DecIntegerLiteral} | {Decimal}
     Others      = "[" | "]" | ";" | ":" | "&" | "|" | "^" | "."
     Identifiers = ({Letter} | "_") ({LetterOrDigit}| "_")*
 %%
 
 {Comment} | {WhiteSpace} { /*Ignore*/ }
+
+/* Condicion if else */
+"if"   { return token(yytext(), "IF", yyline, yycolumn); }
+"else" { return token(yytext(), "ELSE", yyline, yycolumn); }
+"elif" { return token(yytext(), "ELIF", yyline, yycolumn); }
+
+/* True */
+"True" { return token(yytext(), "BOOLEANO", yyline, yycolumn); }
+
+/* False */
+"False" { return token(yytext(), "BOOLEANO", yyline, yycolumn); }
+
+/* False */
+"#" { return token(yytext(), "NUMERAL", yyline, yycolumn); }
 
 /* Identifier */
 \${Identifier} { return token(yytext(), "IDENTIFICADOR", yyline, yycolumn); }
@@ -97,6 +109,12 @@ import compilerTools.Token;
 /* Identifiers */
 {Identifiers} { return token(yytext(), "IDENTIFICADORES", yyline, yycolumn); }
 
+/* StringArray */
+{StringArray} { return token(yytext(), "CADENA", yyline, yycolumn); }
+
+/* SimpleStringArray */
+{SimpleStringArray} { return token(yytext(), "CADENA", yyline, yycolumn); }
+
 /* Operadores de agrupación */
 "(" { return token(yytext(), "PARENTESIS_A", yyline, yycolumn); }
 ")" { return token(yytext(), "PARENTESIS_B", yyline, yycolumn); }
@@ -104,6 +122,6 @@ import compilerTools.Token;
 "}" { return token(yytext(), "LLAVE_B", yyline, yycolumn); }
 
 /* Signos de puntuación */
-"," { return token(yytext(), "COMA", yyline, yycolumn); }
+"," { return token(yytext(), "COMA", yyline, yycolumn); } 
 
 . { return token(yytext(), "ERROR", yyline, yycolumn); }

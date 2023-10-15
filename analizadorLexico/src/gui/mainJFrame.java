@@ -34,12 +34,11 @@ import javax.swing.Timer;
  * @author hamme
  */
 public class mainJFrame extends javax.swing.JFrame {
-    
+
     /* Disculpe auxiliar, pero la verdad no le entendi al curso
     y apenas y me dio tiempo de hacer la tarea :(
     Toco repetir para el siguiente año. A ver si se puede
-    */
-
+     */
     private String title;
     private Directory directory;
     private Timer timerKeyReleased;
@@ -348,10 +347,27 @@ public class mainJFrame extends javax.swing.JFrame {
     private void syntacticAnalysis() {  //VERIFICAR TODO EL CONTENIDO
         Grammar grammatic = new Grammar(tokens, errors);
 
-        grammatic.delete(new String[]{"ERROR", "ERROR_1", "ERROR_2"}, 1);
+        //grammatic.delete(new String[]{"ERROR", "ERROR_1", "ERROR_2"}, 1);
 
-        grammatic.group("VARIABLES", "(IDENTIFICADORES | COMA IDENTIFICADORES)+ ASIGNACION (CONSTANTES | COMA CONSTANTES"+
-                "| ARITMETICO CONSTANTES | COMPARACION | LOGICOS | OTROS | PALABRAS_CLAVE | COMA)+");
+        grammatic.group("VARIABLES", "(IDENTIFICADORES | COMA IDENTIFICADORES)+ ASIGNACION (CONSTANTES | COMA CONSTANTES"
+                + "| ARITMETICO CONSTANTES | COMPARACION | LOGICOS | OTROS | PALABRAS_CLAVE | COMA | AGRUPACION | BOOLEANO | CADENA)+");
+
+        grammatic.group("AGRUPACION", "PARENTESIS_A (IDENTIFICADORES | CONSTANTES | ARITMETICO CONSTANTES | "
+                + "COMPARACION | LOGICOS| OTROS | PALABRAS_CLAVE | COMA | CADENA | AGRUPACION)+ PARENTESIS_B");
+
+        grammatic.group("COMPARACION_NUMEROS", "CONSTANTES COMPARACION CONSTANTES");
+
+        grammatic.group("COMPARACION_IDENTIFICADORES", "CADENA BOOLEANO");
+
+        grammatic.group("ESTRUCTURA_IF", "IF (COMPARACION_NUMEROS | COMPARACION_IDENTIFICADORES | BOOLEANO) (NUMERAL BLOQUE_CODIGO)+");
+
+        grammatic.group("ESTRUCTURA_ELSE", "ELSE (NUMERAL BLOQUE_CODIGO)+");
+        
+        grammatic.group("ESTRUCTURA_ELIF", "ELIF (COMPARACION_NUMEROS | COMPARACION_IDENTIFICADORES | BOOLEANO) (NUMERAL BLOQUE_CODIGO)+");
+        
+        grammatic.group("CONDICIONAL_IF", "ESTRUCTURA_IF (ELSE | ELIF)+");
+
+        grammatic.group("BLOQUE_CODIGO", "(VARIABLES| AGRUPACION | ESTRUCTURA_IF | CADENA)+");
 
         grammatic.show();
     }
